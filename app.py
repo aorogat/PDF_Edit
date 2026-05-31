@@ -27,9 +27,10 @@ TMP_DIR.mkdir(parents=True, exist_ok=True)
 # Quality presets: JPEG quality + max image dimension (pixels on the long side).
 # Lower values = smaller files, more visible artifacts.
 QUALITY_PRESETS: dict[str, dict[str, int]] = {
-    "light":  {"jpeg_quality": 75, "max_dim": 2200},
-    "medium": {"jpeg_quality": 55, "max_dim": 1700},
-    "strong": {"jpeg_quality": 38, "max_dim": 1300},
+    "light":   {"jpeg_quality": 75, "max_dim": 2200},
+    "medium":  {"jpeg_quality": 55, "max_dim": 1700},
+    "strong":  {"jpeg_quality": 38, "max_dim": 1300},
+    "extreme": {"jpeg_quality": 15, "max_dim": 900},
 }
 DEFAULT_LEVEL = "medium"
 
