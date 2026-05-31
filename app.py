@@ -72,12 +72,8 @@ def _recompress_image(image_bytes: bytes, jpeg_quality: int, max_dim: int) -> by
     return buf.getvalue()
 
 
-def compress_pdf(src_bytes: bytes, level: str) -> tuple[bytes, int, int]:
+def compress_pdf(src_bytes: bytes, jpeg_quality: int, max_dim: int) -> tuple[bytes, int, int]:
     """Compress a PDF and return (data, original_size, compressed_size)."""
-    preset = QUALITY_PRESETS.get(level, QUALITY_PRESETS[DEFAULT_LEVEL])
-    jpeg_quality = preset["jpeg_quality"]
-    max_dim = preset["max_dim"]
-
     original_size = len(src_bytes)
     doc = fitz.open(stream=src_bytes, filetype="pdf")
 
@@ -142,13 +138,25 @@ def compress():
     if not upload.filename.lower().endswith(".pdf"):
         return jsonify({"error": "Only PDF files are supported"}), 400
 
-    level = (request.form.get("level") or DEFAULT_LEVEL).lower()
-    if level not in QUALITY_PRESETS:
-        level = DEFAULT_LEVEL
+    # Resolve compression params — accept direct values or fall back to a preset.
+    try:
+        jpeg_quality = int(request.form.get("jpeg_quality", 0))
+        max_dim = int(request.form.get("max_dim", 0))
+    except ValueError:
+        jpeg_quality = max_dim = 0
+
+    if not (5 <= jpeg_quality <= 95 and 400 <= max_dim <= 4000):
+        level = (request.form.get("level") or DEFAULT_LEVEL).lower()
+        preset = QUALITY_PRESETS.get(level, QUALITY_PRESETS[DEFAULT_LEVEL])
+        jpeg_quality = preset["jpeg_quality"]
+        max_dim = preset["max_dim"]
+
+    jpeg_quality = max(5, min(95, jpeg_quality))
+    max_dim = max(400, min(4000, max_dim))
 
     try:
         src_bytes = upload.stream.read()
-        data, original_size, compressed_size = compress_pdf(src_bytes, level)
+        data, original_size, compressed_size = compress_pdf(src_bytes, jpeg_quality, max_dim)
     except fitz.FileDataError as exc:
         return jsonify({"error": f"Invalid PDF: {exc}"}), 400
     except Exception as exc:  # noqa: BLE001 - surface unexpected errors to UI
@@ -169,7 +177,8 @@ def compress():
             "compressed_size": compressed_size,
             "saved_bytes": saved,
             "saved_percent": round(ratio, 2),
-            "level": level,
+            "jpeg_quality": jpeg_quality,
+            "max_dim": max_dim,
         }
     )
 

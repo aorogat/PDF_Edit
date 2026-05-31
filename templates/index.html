@@ -99,50 +99,151 @@
       }
       .file-row button:hover { color: var(--danger); }
 
+      /* ── Compression slider section ── */
       .level {
-        margin-top: 18px;
+        margin-top: 22px;
       }
-      .level .level-label {
+      .level-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        margin-bottom: 10px;
+      }
+      .level-header .level-label {
         color: var(--muted);
         font-size: 13px;
         text-transform: uppercase;
         letter-spacing: 0.06em;
-        margin-bottom: 8px;
       }
-      .seg {
+      .level-header .level-badge {
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--accent-2);
+        letter-spacing: 0.01em;
+      }
+
+      /* Preset quick-pick row */
+      .presets {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
         gap: 6px;
-        padding: 4px;
-        background: rgba(0, 0, 0, 0.25);
-        border: 1px solid var(--border);
-        border-radius: 10px;
+        margin-bottom: 14px;
       }
-      .seg button {
-        background: transparent;
-        color: var(--text);
-        border: 1px solid transparent;
+      .presets button {
+        background: rgba(0,0,0,0.2);
+        color: var(--muted);
+        border: 1px solid var(--border);
         border-radius: 8px;
-        padding: 9px 10px;
-        font-size: 13px;
-        font-weight: 600;
+        padding: 7px 6px 5px;
+        font-size: 12px;
+        font-weight: 700;
         cursor: pointer;
         text-align: center;
-        transition: background 0.15s ease, border-color 0.15s ease;
+        transition: background 0.12s, border-color 0.12s, color 0.12s;
+        line-height: 1.2;
       }
-      .seg button .hint {
+      .presets button .preset-hint {
         display: block;
         font-weight: 400;
+        font-size: 10px;
+        margin-top: 2px;
+        opacity: 0.7;
+      }
+      .presets button:hover {
+        background: rgba(99,102,241,0.1);
+        border-color: rgba(99,102,241,0.35);
+        color: var(--text);
+      }
+      .presets button.active {
+        background: rgba(99,102,241,0.2);
+        border-color: rgba(99,102,241,0.65);
+        color: var(--text);
+      }
+
+      /* Slider track */
+      .slider-wrap {
+        position: relative;
+        padding-bottom: 6px;
+      }
+      .track-bg {
+        position: absolute;
+        top: 50%; left: 0; right: 0;
+        height: 6px;
+        margin-top: -3px;
+        border-radius: 3px;
+        background: linear-gradient(
+          to right,
+          #10b981 0%,
+          #22d3ee 30%,
+          #f59e0b 60%,
+          #ef4444 100%
+        );
+        pointer-events: none;
+      }
+      input[type="range"].comp-slider {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 100%;
+        height: 6px;
+        background: transparent;
+        border-radius: 3px;
+        outline: none;
+        cursor: pointer;
+        position: relative;
+      }
+      input[type="range"].comp-slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 22px; height: 22px;
+        border-radius: 50%;
+        background: var(--text);
+        border: 3px solid var(--accent);
+        box-shadow: 0 0 0 4px rgba(99,102,241,0.25), 0 2px 8px rgba(0,0,0,0.4);
+        transition: box-shadow 0.15s ease, border-color 0.15s ease;
+        cursor: grab;
+      }
+      input[type="range"].comp-slider:active::-webkit-slider-thumb {
+        cursor: grabbing;
+        box-shadow: 0 0 0 6px rgba(99,102,241,0.35), 0 2px 8px rgba(0,0,0,0.4);
+      }
+      input[type="range"].comp-slider::-moz-range-thumb {
+        width: 22px; height: 22px;
+        border-radius: 50%;
+        background: var(--text);
+        border: 3px solid var(--accent);
+        box-shadow: 0 0 0 4px rgba(99,102,241,0.25), 0 2px 8px rgba(0,0,0,0.4);
+        cursor: grab;
+      }
+
+      /* Info pills below slider */
+      .slider-info {
+        display: flex;
+        gap: 10px;
+        margin-top: 12px;
+        flex-wrap: wrap;
+      }
+      .info-pill {
+        flex: 1;
+        min-width: 120px;
+        background: rgba(0,0,0,0.25);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 8px 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 8px;
+      }
+      .info-pill .pill-label {
         font-size: 11px;
         color: var(--muted);
-        margin-top: 2px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
       }
-      .seg button:hover { background: rgba(255, 255, 255, 0.04); }
-      .seg button.active {
-        background: rgba(99, 102, 241, 0.18);
-        border-color: rgba(99, 102, 241, 0.55);
+      .info-pill .pill-val {
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--text);
       }
-      .seg button.active .hint { color: var(--text); }
 
       .actions {
         margin-top: 18px;
@@ -250,12 +351,32 @@
         </div>
 
         <div class="level">
-          <div class="level-label">Compression level</div>
-          <div class="seg" id="levelSeg" role="group" aria-label="Compression level">
-            <button type="button" data-level="light">Light<span class="hint">Best quality</span></button>
-            <button type="button" data-level="medium" class="active">Medium<span class="hint">Recommended</span></button>
-            <button type="button" data-level="strong">Strong<span class="hint">Smallest size</span></button>
-            <button type="button" data-level="extreme">Extreme<span class="hint">Max squeeze</span></button>
+          <div class="level-header">
+            <span class="level-label">Compression</span>
+            <span class="level-badge" id="levelBadge">Medium</span>
+          </div>
+
+          <div class="presets" id="presets" role="group" aria-label="Compression presets">
+            <button type="button" data-slider="20">Light<span class="preset-hint">Best quality</span></button>
+            <button type="button" data-slider="45" class="active">Medium<span class="preset-hint">Recommended</span></button>
+            <button type="button" data-slider="70">Strong<span class="preset-hint">Smaller file</span></button>
+            <button type="button" data-slider="95">Extreme<span class="preset-hint">Max squeeze</span></button>
+          </div>
+
+          <div class="slider-wrap">
+            <div class="track-bg"></div>
+            <input id="compSlider" class="comp-slider" type="range" min="0" max="100" value="45" aria-label="Compression amount" />
+          </div>
+
+          <div class="slider-info">
+            <div class="info-pill">
+              <span class="pill-label">JPEG Quality</span>
+              <span class="pill-val" id="pillQuality">55</span>
+            </div>
+            <div class="info-pill">
+              <span class="pill-label">Max Dimension</span>
+              <span class="pill-val" id="pillDim">1700 px</span>
+            </div>
           </div>
         </div>
 
@@ -281,34 +402,94 @@
     </div>
 
     <script>
-      const fileInput = document.getElementById("file");
-      const drop = document.getElementById("drop");
-      const fileRow = document.getElementById("fileRow");
-      const fileName = document.getElementById("fileName");
-      const fileMeta = document.getElementById("fileMeta");
-      const clearBtn = document.getElementById("clearBtn");
+      /* ── DOM refs ── */
+      const fileInput   = document.getElementById("file");
+      const drop        = document.getElementById("drop");
+      const fileRow     = document.getElementById("fileRow");
+      const fileName    = document.getElementById("fileName");
+      const fileMeta    = document.getElementById("fileMeta");
+      const clearBtn    = document.getElementById("clearBtn");
       const compressBtn = document.getElementById("compressBtn");
-      const resetBtn = document.getElementById("resetBtn");
-      const statusEl = document.getElementById("status");
-      const resultEl = document.getElementById("result");
-      const origVal = document.getElementById("origVal");
-      const compVal = document.getElementById("compVal");
-      const savedVal = document.getElementById("savedVal");
-      const downloadLink = document.getElementById("downloadLink");
+      const resetBtn    = document.getElementById("resetBtn");
+      const statusEl    = document.getElementById("status");
+      const resultEl    = document.getElementById("result");
+      const origVal     = document.getElementById("origVal");
+      const compVal     = document.getElementById("compVal");
+      const savedVal    = document.getElementById("savedVal");
+      const downloadLink= document.getElementById("downloadLink");
+      const presetsEl   = document.getElementById("presets");
+      const slider      = document.getElementById("compSlider");
+      const levelBadge  = document.getElementById("levelBadge");
+      const pillQuality = document.getElementById("pillQuality");
+      const pillDim     = document.getElementById("pillDim");
 
-      const levelSeg = document.getElementById("levelSeg");
       let currentFile = null;
-      let currentLevel = "medium";
 
-      levelSeg.addEventListener("click", (e) => {
-        const btn = e.target.closest("button[data-level]");
+      /* ── Slider ↔ compression param mapping ──
+         Control points: [sliderValue, jpegQuality, maxDim]
+         Values between points are linearly interpolated.                     */
+      const STOPS = [
+        { s:  0, q: 92, d: 2800 },   // no compression extreme
+        { s: 20, q: 75, d: 2200 },   // Light
+        { s: 45, q: 55, d: 1700 },   // Medium
+        { s: 70, q: 38, d: 1300 },   // Strong
+        { s: 95, q: 15, d:  900 },   // Extreme
+        { s:100, q: 10, d:  750 },   // absolute max
+      ];
+
+      const PRESETS = [
+        { label: "Light",   s: 20 },
+        { label: "Medium",  s: 45 },
+        { label: "Strong",  s: 70 },
+        { label: "Extreme", s: 95 },
+      ];
+
+      function lerp(a, b, t) { return Math.round(a + (b - a) * t); }
+
+      function sliderToParams(v) {
+        v = Math.max(0, Math.min(100, v));
+        for (let i = 0; i < STOPS.length - 1; i++) {
+          if (v >= STOPS[i].s && v <= STOPS[i+1].s) {
+            const t = (v - STOPS[i].s) / (STOPS[i+1].s - STOPS[i].s);
+            return {
+              quality: lerp(STOPS[i].q, STOPS[i+1].q, t),
+              maxDim:  lerp(STOPS[i].d, STOPS[i+1].d, t),
+            };
+          }
+        }
+        return { quality: 55, maxDim: 1700 };
+      }
+
+      function sliderLabel(v) {
+        const snap = PRESETS.find(p => Math.abs(p.s - v) <= 1);
+        return snap ? snap.label : "Custom";
+      }
+
+      function updateSliderUI(v) {
+        const { quality, maxDim } = sliderToParams(v);
+        pillQuality.textContent = quality;
+        pillDim.textContent     = maxDim + " px";
+        levelBadge.textContent  = sliderLabel(v);
+
+        /* highlight matching preset button (if any) */
+        presetsEl.querySelectorAll("button").forEach(btn => {
+          btn.classList.toggle("active", Math.abs(+btn.dataset.slider - v) <= 1);
+        });
+      }
+
+      slider.addEventListener("input", () => updateSliderUI(+slider.value));
+
+      presetsEl.addEventListener("click", (e) => {
+        const btn = e.target.closest("button[data-slider]");
         if (!btn) return;
-        currentLevel = btn.dataset.level;
-        levelSeg.querySelectorAll("button").forEach((b) =>
-          b.classList.toggle("active", b === btn)
-        );
+        slider.value = btn.dataset.slider;
+        updateSliderUI(+slider.value);
       });
 
+      /* initialise UI */
+      updateSliderUI(+slider.value);
+
+      /* ── Utilities ── */
       function fmtSize(bytes) {
         if (bytes < 1024) return bytes + " B";
         if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
@@ -326,6 +507,7 @@
         statusEl.appendChild(document.createTextNode(msg));
       }
 
+      /* ── File handling ── */
       function setFile(file) {
         if (!file) return;
         if (!file.name.toLowerCase().endsWith(".pdf")) {
@@ -354,23 +536,18 @@
       clearBtn.addEventListener("click", clearFile);
       resetBtn.addEventListener("click", clearFile);
 
-      ["dragenter", "dragover"].forEach((ev) =>
-        drop.addEventListener(ev, (e) => {
-          e.preventDefault();
-          drop.classList.add("drag");
-        })
+      ["dragenter", "dragover"].forEach(ev =>
+        drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("drag"); })
       );
-      ["dragleave", "drop"].forEach((ev) =>
-        drop.addEventListener(ev, (e) => {
-          e.preventDefault();
-          drop.classList.remove("drag");
-        })
+      ["dragleave", "drop"].forEach(ev =>
+        drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove("drag"); })
       );
-      drop.addEventListener("drop", (e) => {
+      drop.addEventListener("drop", e => {
         const f = e.dataTransfer.files && e.dataTransfer.files[0];
         if (f) setFile(f);
       });
 
+      /* ── Compress ── */
       compressBtn.addEventListener("click", async () => {
         if (!currentFile) return;
         compressBtn.disabled = true;
@@ -378,24 +555,28 @@
         resultEl.classList.remove("show");
         setStatus("Compressing...", "busy");
 
+        const { quality, maxDim } = sliderToParams(+slider.value);
+
         const form = new FormData();
         form.append("file", currentFile);
-        form.append("level", currentLevel);
+        form.append("jpeg_quality", quality);
+        form.append("max_dim", maxDim);
 
         try {
-          const res = await fetch("/compress", { method: "POST", body: form });
+          const res  = await fetch("/compress", { method: "POST", body: form });
           const data = await res.json();
           if (!res.ok) throw new Error(data.error || "Compression failed");
 
           origVal.textContent = fmtSize(data.original_size);
           compVal.textContent = fmtSize(data.compressed_size);
-          const saved = data.saved_bytes > 0
+          savedVal.textContent = data.saved_bytes > 0
             ? `${fmtSize(data.saved_bytes)} (${data.saved_percent}%)`
             : "Already optimized";
-          savedVal.textContent = saved;
 
-          const url = `/download/${data.token}?name=${encodeURIComponent(data.original_name)}`;
-          downloadLink.setAttribute("href", url);
+          downloadLink.setAttribute(
+            "href",
+            `/download/${data.token}?name=${encodeURIComponent(data.original_name)}`
+          );
           resultEl.classList.add("show");
           setStatus("");
         } catch (err) {
